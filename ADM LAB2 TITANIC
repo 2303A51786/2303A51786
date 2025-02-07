@@ -1,0 +1,163 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPnPOUyp2l6RGp1V8QCEYPv",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/2303A51786/2303A51786/blob/main/ADM%20LAB2%20TITANIC\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 3,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "oxvc13FooJ62",
+        "outputId": "cc1291c0-0cbd-4a1b-be06-748e6f6b18d4"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Original DataFrame:\n",
+            "   PassengerId  Survived  Pclass  \\\n",
+            "0            1         0       3   \n",
+            "1            2         1       1   \n",
+            "2            3         1       3   \n",
+            "3            4         1       1   \n",
+            "4            5         0       3   \n",
+            "\n",
+            "                                                Name     Sex   Age  SibSp  \\\n",
+            "0                            Braund, Mr. Owen Harris    male  22.0      1   \n",
+            "1  Cumings, Mrs. John Bradley (Florence Briggs Th...  female  38.0      1   \n",
+            "2                             Heikkinen, Miss. Laina  female  26.0      0   \n",
+            "3       Futrelle, Mrs. Jacques Heath (Lily May Peel)  female  35.0      1   \n",
+            "4                           Allen, Mr. William Henry    male  35.0      0   \n",
+            "\n",
+            "   Parch            Ticket     Fare Cabin Embarked  \n",
+            "0      0         A/5 21171   7.2500   NaN        S  \n",
+            "1      0          PC 17599  71.2833   C85        C  \n",
+            "2      0  STON/O2. 3101282   7.9250   NaN        S  \n",
+            "3      0            113803  53.1000  C123        S  \n",
+            "4      0            373450   8.0500   NaN        S  \n",
+            "\n",
+            "DataFrame after Mean Imputation:\n",
+            "                                                Name     Sex  \\\n",
+            "0                            Braund, Mr. Owen Harris    male   \n",
+            "1  Cumings, Mrs. John Bradley (Florence Briggs Th...  female   \n",
+            "2                             Heikkinen, Miss. Laina  female   \n",
+            "3       Futrelle, Mrs. Jacques Heath (Lily May Peel)  female   \n",
+            "4                           Allen, Mr. William Henry    male   \n",
+            "\n",
+            "             Ticket Cabin Embarked  PassengerId  Survived  Pclass   Age  \\\n",
+            "0         A/5 21171   NaN        S          1.0       0.0     3.0  22.0   \n",
+            "1          PC 17599   C85        C          2.0       1.0     1.0  38.0   \n",
+            "2  STON/O2. 3101282   NaN        S          3.0       1.0     3.0  26.0   \n",
+            "3            113803  C123        S          4.0       1.0     1.0  35.0   \n",
+            "4            373450   NaN        S          5.0       0.0     3.0  35.0   \n",
+            "\n",
+            "   SibSp  Parch     Fare  \n",
+            "0    1.0    0.0   7.2500  \n",
+            "1    1.0    0.0  71.2833  \n",
+            "2    0.0    0.0   7.9250  \n",
+            "3    1.0    0.0  53.1000  \n",
+            "4    0.0    0.0   8.0500  \n",
+            "\n",
+            "DataFrame after Min-Max Scaling:\n",
+            "                                                Name     Sex  \\\n",
+            "0                            Braund, Mr. Owen Harris    male   \n",
+            "1  Cumings, Mrs. John Bradley (Florence Briggs Th...  female   \n",
+            "2                             Heikkinen, Miss. Laina  female   \n",
+            "3       Futrelle, Mrs. Jacques Heath (Lily May Peel)  female   \n",
+            "4                           Allen, Mr. William Henry    male   \n",
+            "\n",
+            "             Ticket Cabin Embarked  PassengerId  Survived  Pclass       Age  \\\n",
+            "0         A/5 21171   NaN        S     0.000000       0.0     1.0  0.271174   \n",
+            "1          PC 17599   C85        C     0.001124       1.0     0.0  0.472229   \n",
+            "2  STON/O2. 3101282   NaN        S     0.002247       1.0     1.0  0.321438   \n",
+            "3            113803  C123        S     0.003371       1.0     0.0  0.434531   \n",
+            "4            373450   NaN        S     0.004494       0.0     1.0  0.434531   \n",
+            "\n",
+            "   SibSp  Parch      Fare  \n",
+            "0  0.125    0.0  0.014151  \n",
+            "1  0.125    0.0  0.139136  \n",
+            "2  0.000    0.0  0.015469  \n",
+            "3  0.125    0.0  0.103644  \n",
+            "4  0.000    0.0  0.015713  \n"
+          ]
+        }
+      ],
+      "source": [
+        "import pandas as pd\n",
+        "from sklearn.preprocessing import MinMaxScaler\n",
+        "from sklearn.impute import SimpleImputer\n",
+        "\n",
+        "# Load the dataset (Replace with your actual file path)\n",
+        "df = pd.read_csv('/content/titanic.csv')\n",
+        "\n",
+        "# Display the first few rows of the dataset\n",
+        "print(\"Original DataFrame:\")\n",
+        "print(df.head())\n",
+        "\n",
+        "# 1. Handle missing values using Mean Imputation\n",
+        "# Select only numeric features for imputation\n",
+        "numeric_features = df.select_dtypes(include=['number']).columns\n",
+        "imputer = SimpleImputer(strategy='mean')\n",
+        "\n",
+        "# Apply imputation only to numeric columns\n",
+        "df_imputed = pd.DataFrame(imputer.fit_transform(df[numeric_features]), columns=numeric_features)\n",
+        "\n",
+        "# Join the imputed numeric features back to the original DataFrame\n",
+        "df_imputed = df.drop(columns=numeric_features).join(df_imputed)\n",
+        "\n",
+        "\n",
+        "# Display the DataFrame after missing value imputation\n",
+        "print(\"\\nDataFrame after Mean Imputation:\")\n",
+        "print(df_imputed.head())\n",
+        "\n",
+        "# 2. Feature Scaling (Min-Max Normalization)\n",
+        "# Select only numeric features for scaling\n",
+        "numeric_features = df_imputed.select_dtypes(include=['number']).columns\n",
+        "scaler = MinMaxScaler()\n",
+        "\n",
+        "# Apply scaling only to numeric columns\n",
+        "df_scaled = pd.DataFrame(scaler.fit_transform(df_imputed[numeric_features]), columns=numeric_features)\n",
+        "\n",
+        "# Join the scaled numeric features back to the original DataFrame\n",
+        "df_scaled = df_imputed.drop(columns=numeric_features).join(df_scaled)\n",
+        "\n",
+        "\n",
+        "# Display the scaled DataFrame\n",
+        "print(\"\\nDataFrame after Min-Max Scaling:\")\n",
+        "print(df_scaled.head())\n",
+        "\n",
+        "# Optionally, if you want to use Standardization instead, use:\n",
+        "# from sklearn.preprocessing import StandardScaler\n",
+        "# scaler = StandardScaler()\n",
+        "# df_scaled = pd.DataFrame(scaler.fit_transform(df_imputed), columns=df_imputed.columns)"
+      ]
+    }
+  ]
+}
